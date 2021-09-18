@@ -1,0 +1,9 @@
+[general]
+name=Minimal Check Logging
+description=QGIS plugin to test PyQGIS classes and libraries to communicate with user and design event logging system.
+about=QGIS plugin to test PyQGIS classes and libraries to communicate with user and design event logging system.
+version=1.0
+qgisMinimumVersion=3.0
+author=Patricio Soriano
+email=pasoriano@gmail.com
+repository=https://github.com/sigdeletras/minimal_check
