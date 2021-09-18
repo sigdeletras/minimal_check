@@ -1,3 +1,7 @@
+import logging
+import os
+from pathlib import Path
+
 import urllib.request
 import psycopg2
 
@@ -6,9 +10,33 @@ from qgis.core import Qgis, QgsMessageLog, QgsProject
 from qgis.core import Qgis, QgsProject
 from qgis.utils import iface
 
+
+def create_loging_file():
+    """Crear y configura un fichero logger de registro
+    """
+
+    log_path_save = Path(__file__).parent.absolute()
+    log_filename = str(log_path_save)+"/log/logfile.log"
+    log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+    logging.basicConfig(
+        level=logging.DEBUG,   # Nivel de los eventos que se registran en el logger
+        filename=log_filename,  # Fichero de  logs
+        format=log_format      # Formato de registro
+    )
+
+    if os.path.isfile(log_filename):
+        with open(log_filename, 'a') as file:
+            pass
+
+    logging.info("############### START LOGGING ###############")
+
+
 def check():
     """Función que realiza una serie de comprobaciones y muestra el resultado en un mensaje
     """
+
+    create_loging_file()
 
     check_message = 'RESULTADO:\n\n'
 
@@ -32,9 +60,12 @@ def check():
         QgsMessageLog.logMessage(error_message, level=Qgis.Critical)
         QgsMessageLog.logMessage(
             f'Error: {error}', level=Qgis.Critical)
-        
+
         # 3 - messageBar()
         iface.messageBar().pushMessage("ERROR", error_message, level=Qgis.Critical)
+
+        # 4 - logging
+        logging.error(error_message)
 
         return
 
@@ -63,6 +94,9 @@ def check():
         # 3 - messageBar()
         iface.messageBar().pushMessage("ERROR", error_message, level=Qgis.Critical)
 
+        # 4 - logging
+        logging.error('Check 02 - FAIL')
+
         return
 
     finally:
@@ -75,6 +109,7 @@ def check():
 
     try:
         print('Check 03 Start')
+        logging.info('Check 03 Start')
         url = f'{URL_NOMINATIM}format=jsonv2&lat={COORDINATES[0]}&lon={COORDINATES[1]}'
 
         with urllib.request.urlopen(url) as response:
@@ -83,6 +118,7 @@ def check():
 
         check_message += f'03 - Consulta a la API relizada\n'
         print('Check 03 - OK')
+        logging.info('Check 03 - OK')
 
     except urllib.error.URLError as error:
         error_message = 'Check 03 - FAIL Consulta a la API no relizada'
@@ -95,10 +131,15 @@ def check():
         QgsMessageLog.logMessage(error_message, level=Qgis.Critical)
         QgsMessageLog.logMessage(
             f'Error: {error.reason}', level=Qgis.Critical)
-        
+
         # 3 - messageBar()
         iface.messageBar().pushMessage("ERROR", error_message, level=Qgis.Critical)
+
+        # 4 - logging
+        logging.error('Check 03 - FAIL')
+        logging.error(error.reason)
 
         return
 
     QMessageBox.information(None, 'Chek plugin', check_message)
+    logging.info('############### END LOGGING ###############')
