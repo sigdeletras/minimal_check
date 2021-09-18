@@ -4,7 +4,7 @@ import psycopg2
 from PyQt5.QtWidgets import QMessageBox
 from qgis.core import Qgis, QgsMessageLog, QgsProject
 from qgis.core import Qgis, QgsProject
-
+from qgis.utils import iface
 
 def check():
     """Función que realiza una serie de comprobaciones y muestra el resultado en un mensaje
@@ -32,6 +32,9 @@ def check():
         QgsMessageLog.logMessage(error_message, level=Qgis.Critical)
         QgsMessageLog.logMessage(
             f'Error: {error}', level=Qgis.Critical)
+        
+        # 3 - messageBar()
+        iface.messageBar().pushMessage("ERROR", error_message, level=Qgis.Critical)
 
         return
 
@@ -57,6 +60,9 @@ def check():
         # 2 - QgsMessageLog
         QgsMessageLog.logMessage(error_message, level=Qgis.Critical)
 
+        # 3 - messageBar()
+        iface.messageBar().pushMessage("ERROR", error_message, level=Qgis.Critical)
+
         return
 
     finally:
@@ -64,7 +70,7 @@ def check():
             conn.close()
 
     # P03 Consulta una API
-    URL_NOMINATIM = 'https://nominatim.openstreetmap.org/reverse?'
+    URL_NOMINATIM = 'https://xnominatim.openstreetmap.org/reverse?'
     COORDINATES = [37.87893, -4.772846]
 
     try:
@@ -89,6 +95,9 @@ def check():
         QgsMessageLog.logMessage(error_message, level=Qgis.Critical)
         QgsMessageLog.logMessage(
             f'Error: {error.reason}', level=Qgis.Critical)
+        
+        # 3 - messageBar()
+        iface.messageBar().pushMessage("ERROR", error_message, level=Qgis.Critical)
 
         return
 
