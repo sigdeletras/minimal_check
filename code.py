@@ -1,13 +1,11 @@
 import logging
 import os
+import urllib.request
 from pathlib import Path
 
-import urllib.request
 import psycopg2
-
 from PyQt5.QtWidgets import QMessageBox
 from qgis.core import Qgis, QgsMessageLog, QgsProject
-from qgis.core import Qgis, QgsProject
 from qgis.utils import iface
 
 
