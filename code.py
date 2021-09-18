@@ -2,6 +2,7 @@ import urllib.request
 import psycopg2
 
 from PyQt5.QtWidgets import QMessageBox
+from qgis.core import Qgis, QgsMessageLog, QgsProject
 from qgis.core import Qgis, QgsProject
 
 
@@ -21,10 +22,17 @@ def check():
         print('Check 01 - OK')
 
     except Exception as error:
+        error_message = f'Check 01 - FAIL - La capa {LAYER} no se encuentra en el proyecto'
+
         # 1 - Usamos print
-        print(
-            f'Check 01 - FAIL - La capa {LAYER} no se encuentra en el proyecto')
+        print(error_message)
         print(f'Error: {error}')
+
+        # 2 - QgsMessageLog
+        QgsMessageLog.logMessage(error_message, level=Qgis.Critical)
+        QgsMessageLog.logMessage(
+            f'Error: {error}', level=Qgis.Critical)
+
         return
 
     # P02 Realiza una conexión a una DB
@@ -42,7 +50,12 @@ def check():
 
     except Exception as error:
         error_message = 'Check 02 - FAIL No se ha podido establecer la conexión a la DB'
+
+        # 1 - Usamos print
         print(error_message)
+
+        # 2 - QgsMessageLog
+        QgsMessageLog.logMessage(error_message, level=Qgis.Critical)
 
         return
 
@@ -65,10 +78,18 @@ def check():
         check_message += f'03 - Consulta a la API relizada\n'
         print('Check 03 - OK')
 
-    except urllib.error.URLError as e:
+    except urllib.error.URLError as error:
         error_message = 'Check 03 - FAIL Consulta a la API no relizada'
+
+        # 1 - Usamos print
         print(error_message)
-        print(e.reason)
+        print(error.reason)
+
+        # 2 - QgsMessageLog
+        QgsMessageLog.logMessage(error_message, level=Qgis.Critical)
+        QgsMessageLog.logMessage(
+            f'Error: {error.reason}', level=Qgis.Critical)
+
         return
 
     QMessageBox.information(None, 'Chek plugin', check_message)
