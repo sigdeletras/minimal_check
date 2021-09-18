@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import urllib.request
@@ -43,9 +44,13 @@ def check():
 
     try:
         print('Check 01 Start')
+        logging.info('Check 01 Start')
+
         points_layer = QgsProject.instance().mapLayersByName(LAYER)[0]
         check_message += f'01 - La capa \'{points_layer.name()}\' se encuentra cargada.\n'
+
         print('Check 01 - OK')
+        logging.info('Check 01 - OK')
 
     except Exception as error:
         error_message = f'Check 01 - FAIL - La capa {LAYER} no se encuentra en el proyecto'
@@ -72,6 +77,8 @@ def check():
 
     try:
         print('Check 02 Start')
+        logging.info('Check 02 Start')
+
         conn = psycopg2.connect(host='localhost', port=5432, database='vse',
                                 user='postgres', password='postgres')
         cur = conn.cursor()
@@ -79,6 +86,7 @@ def check():
 
         check_message += f'02 - Conexión correcta a la db\n'
         print('Check 02 - OK')
+        logging.info('Check 02 - OK')
 
     except Exception as error:
         error_message = 'Check 02 - FAIL No se ha podido establecer la conexión a la DB'
@@ -108,13 +116,16 @@ def check():
     try:
         print('Check 03 Start')
         logging.info('Check 03 Start')
+
         url = f'{URL_NOMINATIM}format=jsonv2&lat={COORDINATES[0]}&lon={COORDINATES[1]}'
 
         with urllib.request.urlopen(url) as response:
-            data = response.read().decode('utf-8')
-            print(data)
+            r = response.read().decode('utf-8')
+            data_json = json.loads(r)
+            print(data_json)
 
         check_message += f'03 - Consulta a la API relizada\n'
+        
         print('Check 03 - OK')
         logging.info('Check 03 - OK')
 
