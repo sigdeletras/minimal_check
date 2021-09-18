@@ -70,7 +70,7 @@ def check():
             conn.close()
 
     # P03 Consulta una API
-    URL_NOMINATIM = 'https://xnominatim.openstreetmap.org/reverse?'
+    URL_NOMINATIM = 'https://nominatim.openstreetmap.org/reverse?'
     COORDINATES = [37.87893, -4.772846]
 
     try:
